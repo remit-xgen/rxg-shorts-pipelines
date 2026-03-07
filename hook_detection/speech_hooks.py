@@ -4,26 +4,14 @@ Find viral hook phrases in transcript
 """
 
 from logging.logger import logger
+from hook_detection.data.speech_hook_phrases import HOOK_PHRASES
 
 
 class SpeechHookDetector:
 
     def __init__(self):
 
-        self.hook_phrases = [
-            "you won't believe",
-            "wait for it",
-            "this changed everything",
-            "nobody talks about",
-            "here's the secret",
-            "watch this",
-            "this is crazy",
-            "i discovered",
-            "this is why",
-            "what happened next",
-            "this will shock you",
-            "the truth is"
-        ]
+        self.hook_phrases = HOOK_PHRASES
 
     def detect(self, transcript):
 
