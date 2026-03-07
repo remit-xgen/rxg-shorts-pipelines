@@ -82,7 +82,7 @@ class PipelineOrchestrator:
         # =========================
 
         yt_trends = YouTubeTrends().get_trends()
-        google_trends = GoogleTrends().get_trends()
+        google_trends = GoogleTrends().get_trending()
 
         ranked = TrendRanker().rank(yt_trends + google_trends)
 
