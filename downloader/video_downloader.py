@@ -29,7 +29,9 @@ class VideoDownloader:
         ydl_opts = {
             "outtmpl": output_path,
             "format": "bv*[height<=1080]+ba/best[height<=1080]",
-            "quiet": True
+            "quiet": True,
+            "retries": 3,
+            "fragment_retries": 3
         }
 
         try:
