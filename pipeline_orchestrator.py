@@ -212,7 +212,7 @@ class PipelineOrchestrator:
         # 15. Quality Control
         # =========================
 
-        passed = QualityFilter().check(clip_file)
+        passed = QualityFilter().filter([clip_file])
 
         if not passed:
             logger.warning("Video failed quality check")
