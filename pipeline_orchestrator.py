@@ -133,7 +133,8 @@ class PipelineOrchestrator:
         # 6. Analysis
         # =========================
 
-        transcript = Transcription().run(audio)
+        transcriber = Transcription()
+        transcript = transcriber.run(audio)
 
         scenes = SceneDetection().detect(video_path)
 
