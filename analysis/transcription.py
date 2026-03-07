@@ -10,7 +10,7 @@ from logging.logger import logger
 class Transcription:
 
     def __init__(self):
-        self.model = model_manager.load_whisper()
+        self.model = model_manager singleton
 
     def transcribe(self, audio_path):
 
