@@ -86,7 +86,7 @@ class PipelineOrchestrator:
 
         ranked = TrendRanker().rank(yt_trends + google_trends)
 
-        topic = TrendSelector().select(ranked)
+        topic = TrendSelector().select(ranked)[0]
 
         logger.info(f"Selected topic: {topic}")
 
