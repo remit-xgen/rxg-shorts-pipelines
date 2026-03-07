@@ -1,6 +1,6 @@
 """
-YouTube Downloader
-Download videos using yt-dlp
+Video Downloader
+Download videos from YouTube using yt-dlp
 """
 
 import os
@@ -9,27 +9,26 @@ from logging.logger import logger
 import config
 
 
-class YouTubeDownloader:
+class VideoDownloader:
 
     def __init__(self):
         os.makedirs(config.DOWNLOAD_DIR, exist_ok=True)
 
     def download(self, video):
 
-        """
-        Download video from YouTube
-        """
-
         url = video["url"]
         video_id = video["id"]
 
         logger.info(f"Downloading video: {video_id}")
 
-        output_path = os.path.join(config.DOWNLOAD_DIR, f"{video_id}.mp4")
+        output_path = os.path.join(
+            config.DOWNLOAD_DIR,
+            f"{video_id}.mp4"
+        )
 
         ydl_opts = {
             "outtmpl": output_path,
-            "format": "mp4",
+            "format": "bestvideo+bestaudio/best",
             "quiet": True
         }
 
