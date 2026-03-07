@@ -122,7 +122,8 @@ class PipelineOrchestrator:
 
         video_path = NormalizeVideo().process(video_path)
 
-        FPSSampler().process(video_path)
+        for _ in FPSSampler().sample(video_path):
+    pass
 
         frames = FrameExtractor().extract(video_path)
 
