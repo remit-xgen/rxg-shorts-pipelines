@@ -1,5 +1,6 @@
 """
-YouTube Shorts Uploader
+YouTube Uploader
+Handles uploading Shorts to YouTube
 """
 
 import os
@@ -8,30 +9,77 @@ from logging.logger import logger
 
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+import pickle
+
+
+SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
 
 class YouTubeUploader:
 
-    def __init__(self, youtube_service):
+    def __init__(self, client_secret_file="client_secret.json"):
 
-        self.youtube = youtube_service
+        self.client_secret_file = client_secret_file
+        self.youtube = self._authenticate()
 
-    def upload_short(self, video_path, title, description, tags=None):
+
+    def _authenticate(self):
+
+        creds = None
+
+        if os.path.exists("token.pickle"):
+
+            with open("token.pickle", "rb") as token:
+                creds = pickle.load(token)
+
+        if not creds or not creds.valid:
+
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    self.client_secret_file,
+                    SCOPES
+                )
+
+                creds = flow.run_local_server(port=0)
+
+            with open("token.pickle", "wb") as token:
+                pickle.dump(creds, token)
+
+        return build("youtube", "v3", credentials=creds)
+
+
+    def upload_video(
+        self,
+        video_path,
+        title,
+        description,
+        tags=None,
+        privacy="public"
+    ):
 
         try:
 
-            logger.info(f"Uploading video: {video_path}")
+            logger.info(f"Uploading video to YouTube: {video_path}")
 
-            body = {
+            request_body = {
+
                 "snippet": {
                     "title": title,
                     "description": description,
-                    "tags": tags or [],
+                    "tags": tags if tags else [],
                     "categoryId": "22"
                 },
+
                 "status": {
-                    "privacyStatus": "public"
+                    "privacyStatus": privacy,
+                    "selfDeclaredMadeForKids": False
                 }
+
             }
 
             media = MediaFileUpload(
@@ -42,19 +90,28 @@ class YouTubeUploader:
 
             request = self.youtube.videos().insert(
                 part="snippet,status",
-                body=body,
+                body=request_body,
                 media_body=media
             )
 
-            response = request.execute()
+            response = None
 
-            video_id = response["id"]
+            while response is None:
 
-            logger.info(f"Upload successful: {video_id}")
+                status, response = request.next_chunk()
 
-            return video_id
+                if status:
+
+                    logger.info(
+                        f"Upload progress: {int(status.progress() * 100)}%"
+                    )
+
+            logger.info("Upload completed")
+
+            return response
 
         except Exception as e:
 
             logger.error(f"YouTube upload failed: {e}")
+
             return None
