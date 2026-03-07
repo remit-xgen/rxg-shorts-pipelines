@@ -28,7 +28,7 @@ class VideoDownloader:
 
         ydl_opts = {
             "outtmpl": output_path,
-            "format": "bestvideo+bestaudio/best",
+            "format": "bv*[height<=1080]+ba/best[height<=1080]",
             "quiet": True
         }
 
