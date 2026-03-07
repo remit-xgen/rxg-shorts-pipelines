@@ -125,7 +125,7 @@ class PipelineOrchestrator:
         for _ in FPSSampler().sample(video_path):
     pass
 
-        frames = FrameExtractor().extract(video_path)
+        frames = FrameExtractor().extract_multiple(video_path,[1,3,5])
 
         audio = AudioExtractor().extract(video_path)
 
