@@ -5,6 +5,9 @@ Controls the entire AI Shorts Factory pipeline
 
 from logging.logger import logger
 
+# Disk Cleanup
+from utils.file_manager import FileManager
+
 # Trend analysis
 from trend_analysis.youtube_trends import YouTubeTrends
 from trend_analysis.google_trends import GoogleTrends
@@ -76,6 +79,8 @@ class PipelineOrchestrator:
     def run(self):
 
         logger.info("Starting RXG Shorts Pipeline")
+
+        FileManager.cleanup_temp_folders()
 
         # =========================
         # 1. Trend Analysis
