@@ -106,7 +106,7 @@ class PipelineOrchestrator:
             logger.warning("No videos found")
             return
 
-        video_url = videos[0]
+        video_url = videos[0]["url"]
 
         logger.info(f"Selected video: {video_url}")
 
