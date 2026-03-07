@@ -65,3 +65,27 @@ class FileManager:
         """
         shutil.move(src, dst)
         logger.info(f"Moved file {src} -> {dst}")
+
+    @staticmethod
+    def cleanup_temp_folders():
+
+        folders = [
+            "downloads",
+            "temp",
+            "frames",
+            "audio",
+            "clips"
+        ]
+
+        for folder in folders:
+
+            if os.path.exists(folder):
+
+                try:
+                    shutil.rmtree(folder)
+                    os.makedirs(folder)
+
+                    logger.info(f"Cleaned folder: {folder}")
+
+                except Exception as e:
+                    logger.error(f"Cleanup failed for {folder}: {e}")
