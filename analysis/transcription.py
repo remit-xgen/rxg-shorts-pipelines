@@ -7,7 +7,7 @@ from models.model_manager import model_manager
 from logging.logger import logger
 
 
-class Transcriber:
+class Transcription:
 
     def __init__(self):
         self.model = model_manager.load_whisper()
