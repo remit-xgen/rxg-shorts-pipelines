@@ -146,7 +146,7 @@ class PipelineOrchestrator:
         hooks = HookGenerator().generate(
             transcript,
             scenes,
-            audio_events
+            audio
         )
 
         # =========================
