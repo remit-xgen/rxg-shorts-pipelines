@@ -232,6 +232,8 @@ class PipelineOrchestrator:
 
         ThumbnailGenerator().generate(final_video)
 
+        FileManager.cleanup_temp_folders()
+
         # =========================
         # 17. Upload
         # =========================
