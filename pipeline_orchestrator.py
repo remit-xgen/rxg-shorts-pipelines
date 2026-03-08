@@ -141,10 +141,10 @@ class PipelineOrchestrator:
         video_path = NormalizeVideo().process(video_path)
 
         # Extract sample frames for analysis
-        frames = FrameExtractor().extract_frames_ffmpeg(
-            video_path,
-            fps=1
-        )
+       # frames = FrameExtractor().extract_frames_ffmpeg(
+           # video_path,
+           # fps=1
+       # )
 
         # Extract audio
         audio = AudioExtractor().extract(video_path)
