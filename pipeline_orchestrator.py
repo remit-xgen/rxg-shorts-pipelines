@@ -3,6 +3,9 @@ Pipeline Orchestrator
 Controls the entire AI Shorts Factory pipeline
 """
 
+import sys
+sys.path.append("/content/rxg-shorts-pipelines")
+
 from logging.logger import logger
 
 # Disk Cleanup
@@ -80,6 +83,12 @@ class PipelineOrchestrator:
     def run(self):
 
         logger.info("Starting RXG Shorts Pipeline")
+
+        import os
+
+        os.makedirs("content/input", exist_ok=True)
+        os.makedirs("content/output", exist_ok=True)
+        os.makedirs("content/temp", exist_ok=True)
 
         FileManager.cleanup_temp_folders()
         FileManager.cleanup_old_files("downloads", hours=12)
@@ -277,3 +286,8 @@ class PipelineOrchestrator:
         )
 
         logger.info("Pipeline finished successfully")
+
+
+        if __name__ == "__main__":
+            orchestrator = PipelineOrchestrator()
+            orchestrator.run()
