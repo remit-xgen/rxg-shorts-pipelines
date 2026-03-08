@@ -123,18 +123,21 @@ class PipelineOrchestrator:
 
         video_path = VideoDownloader().download(video_url)
 
-        # =========================
-        # 5. Preprocessing
-        # =========================
+# =========================
+# 5. Preprocessing
+# =========================
 
-        video_path = NormalizeVideo().process(video_path)
+# Normalize video format
+video_path = NormalizeVideo().process(video_path)
 
-        for _ in FPSSampler().sample(video_path):
-    pass
+# Extract sample frames for analysis
+frames = FrameExtractor().extract_frames_ffmpeg(
+    video_path,
+    fps=1
+)
 
-        frames = FrameExtractor().extract_multiple(video_path,[1,3,5])
-
-        audio = AudioExtractor().extract(video_path)
+# Extract audio
+audio = AudioExtractor().extract(video_path)
 
         # =========================
         # 6. Analysis
