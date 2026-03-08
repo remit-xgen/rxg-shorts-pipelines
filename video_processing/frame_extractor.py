@@ -13,7 +13,9 @@ from logging.logger import logger
 class FrameExtractor:
 
     def __init__(self):
-        pass
+
+        self.frames_dir = "temp/frames"
+        os.makedirs(self.frames_dir, exist_ok=True)
 
 
     def extract_frame(self, video_path, timestamp):
@@ -98,7 +100,7 @@ class FrameExtractor:
             return frames
 
 
-    def extract_frames_ffmpeg(self, video_path, output_folder="frames", fps=1):
+    def extract_frames_ffmpeg(self, video_path, output_folder="temp/frames", fps=1):
 
         """
         Fast frame extraction using FFmpeg
