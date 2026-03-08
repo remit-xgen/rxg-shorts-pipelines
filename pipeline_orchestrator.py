@@ -82,6 +82,8 @@ class PipelineOrchestrator:
 
         FileManager.cleanup_temp_folders()
 
+        FileManager.cleanup_old_files("downloads", hours=12)
+
         # =========================
         # 1. Trend Analysis
         # =========================
