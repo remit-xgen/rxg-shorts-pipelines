@@ -14,14 +14,18 @@ from googleapiclient.http import MediaFileUpload
 
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
 
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
+CLIENT_SECRET_FILE = "/content/drive/MyDrive/rxg_pipeline/client_secret.json"
+TOKEN_FILE = "/content/drive/MyDrive/rxg_pipeline/token.json"
+
 
 class YouTubeUploader:
 
-    def __init__(self, token_file="token.json"):
+    def __init__(self, token_file=TOKEN_FILE):
 
         self.token_file = token_file
         self.youtube = self._authenticate()
