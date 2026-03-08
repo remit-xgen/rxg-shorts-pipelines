@@ -12,6 +12,7 @@ tqdm>=4.66
 
 opencv-python-headless>=4.8
 moviepy>=1.0.3
+imageio-ffmpeg
 ffmpeg-python>=0.2.0
 ultralytics
 
