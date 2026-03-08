@@ -22,7 +22,7 @@ def main():
 
     except Exception as e:
 
-        logger.error(f"Pipeline crashed: {e}")
+        logger.exception(e)
 
 
 if __name__ == "__main__":
