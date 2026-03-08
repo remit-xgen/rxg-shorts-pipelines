@@ -288,6 +288,8 @@ class PipelineOrchestrator:
         logger.info("Pipeline finished successfully")
 
 
+        import traceback
+
         if __name__ == "__main__":
             orchestrator = PipelineOrchestrator()
 
@@ -295,3 +297,4 @@ class PipelineOrchestrator:
                 orchestrator.run()
             except Exception as e:
                 logger.error(f"Pipeline crashed: {e}")
+                logger.error(traceback.format_exc())
