@@ -70,7 +70,6 @@ class FileManager:
     def cleanup_temp_folders():
 
         folders = [
-            "downloads",
             "temp",
             "frames",
             "audio",
