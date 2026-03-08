@@ -88,3 +88,25 @@ class FileManager:
 
                 except Exception as e:
                     logger.error(f"Cleanup failed for {folder}: {e}")
+
+    @staticmethod
+    def cleanup_old_files(folder, hours=6):
+
+        now = time.time()
+
+        for filename in os.listdir(folder):
+
+            file_path = os.path.join(folder, filename)
+
+            if os.path.isfile(file_path):
+
+                file_age = now - os.path.getmtime(file_path)
+
+                if file_age > hours * 3600:
+
+                    try:
+                        os.remove(file_path)
+                        logger.info(f"Removed old file: {file_path}")
+
+                    except Exception as e:
+                        logger.error(f"Failed to remove {file_path}: {e}")
