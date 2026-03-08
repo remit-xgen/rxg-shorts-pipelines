@@ -3,7 +3,7 @@ Caption Templates
 Collection of viral caption templates
 """
 
-CAPTION_TEMPLATES = [
+CAPTION_TEMPLATES: list[str] = [
 
     "You Won't Believe This About {topic}",
     "This {topic} Trick Changes Everything",
