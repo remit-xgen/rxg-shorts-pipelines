@@ -81,8 +81,8 @@ class PipelineOrchestrator:
         logger.info("Starting RXG Shorts Pipeline")
 
         FileManager.cleanup_temp_folders()
-
         FileManager.cleanup_old_files("downloads", hours=12)
+        FileManager.ensure_temp()
 
         # =========================
         # 1. Trend Analysis
