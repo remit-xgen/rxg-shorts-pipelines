@@ -1,17 +1,19 @@
 """
 YouTube Uploader
 Handles uploading Shorts to YouTube
+Compatible with PipelineOrchestrator
 """
 
 import os
+import time
 
 from logging.logger import logger
 
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-from google_auth_oauthlib.flow import InstalledAppFlow
+
+from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
-import pickle
 
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
@@ -19,59 +21,81 @@ SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
 class YouTubeUploader:
 
-    def __init__(self, client_secret_file="client_secret.json"):
+    def __init__(self, token_file="token.json"):
 
-        self.client_secret_file = client_secret_file
+        self.token_file = token_file
         self.youtube = self._authenticate()
 
 
     def _authenticate(self):
 
-        creds = None
+        try:
 
-        if os.path.exists("token.pickle"):
+            if not os.path.exists(self.token_file):
 
-            with open("token.pickle", "rb") as token:
-                creds = pickle.load(token)
+                logger.error("YouTube token.json not found")
+                return None
 
-        if not creds or not creds.valid:
+            creds = Credentials.from_authorized_user_file(
+                self.token_file,
+                SCOPES
+            )
 
-            if creds and creds.expired and creds.refresh_token:
+            if creds.expired and creds.refresh_token:
+
+                logger.info("Refreshing YouTube token")
+
                 creds.refresh(Request())
 
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    self.client_secret_file,
-                    SCOPES
-                )
+            youtube = build(
+                "youtube",
+                "v3",
+                credentials=creds
+            )
 
-                creds = flow.run_local_server(port=0)
+            logger.info("YouTube authentication successful")
 
-            with open("token.pickle", "wb") as token:
-                pickle.dump(creds, token)
+            return youtube
 
-        return build("youtube", "v3", credentials=creds)
+        except Exception as e:
+
+            logger.error(f"YouTube authentication failed: {e}")
+            return None
 
 
     def upload_video(
         self,
         video_path,
-        title,
-        description,
-        tags=None,
+        caption=None,
         privacy="public"
     ):
 
         try:
 
-            logger.info(f"Uploading video to YouTube: {video_path}")
+            if not self.youtube:
+
+                logger.error("YouTube client not initialized")
+                return None
+
+            if not os.path.exists(video_path):
+
+                logger.error(f"Video not found: {video_path}")
+                return None
+
+            logger.info(f"Uploading video: {video_path}")
+
+            title = self._generate_title(caption)
+
+            description = self._generate_description(caption)
+
+            tags = self._extract_tags(caption)
 
             request_body = {
 
                 "snippet": {
                     "title": title,
                     "description": description,
-                    "tags": tags if tags else [],
+                    "tags": tags,
                     "categoryId": "22"
                 },
 
@@ -102,11 +126,13 @@ class YouTubeUploader:
 
                 if status:
 
-                    logger.info(
-                        f"Upload progress: {int(status.progress() * 100)}%"
-                    )
+                    progress = int(status.progress() * 100)
 
-            logger.info("Upload completed")
+                    logger.info(f"Upload progress: {progress}%")
+
+                    time.sleep(1)
+
+            logger.info("YouTube upload completed")
 
             return response
 
@@ -115,3 +141,43 @@ class YouTubeUploader:
             logger.error(f"YouTube upload failed: {e}")
 
             return None
+
+
+    def _generate_title(self, caption):
+
+        if not caption:
+            return "Viral Short"
+
+        title = caption.split("\n")[0]
+
+        if len(title) > 90:
+            title = title[:90]
+
+        return title
+
+
+    def _generate_description(self, caption):
+
+        if not caption:
+            return "#shorts"
+
+        return f"{caption}\n\n#shorts"
+
+
+    def _extract_tags(self, caption):
+
+        if not caption:
+            return []
+
+        tags = []
+
+        for word in caption.split():
+
+            if word.startswith("#"):
+
+                tag = word.replace("#", "")
+
+                if tag not in tags:
+                    tags.append(tag)
+
+        return tags
