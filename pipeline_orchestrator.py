@@ -136,8 +136,8 @@ class PipelineOrchestrator:
             fps=1
         )
 
-# Extract audio
-audio = AudioExtractor().extract(video_path)
+        # Extract audio
+        audio = AudioExtractor().extract(video_path)
 
         # =========================
         # 6. Analysis
