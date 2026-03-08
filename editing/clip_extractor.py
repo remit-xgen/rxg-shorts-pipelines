@@ -7,15 +7,15 @@ import os
 import subprocess
 
 from logging.logger import logger
-from utils.file_manager import FileManager
 
 
 class ClipExtractor:
 
     def __init__(self):
 
-        self.output_dir = "workspace/clips"
+        self.output_dir = "temp/clips"
         os.makedirs(self.output_dir, exist_ok=True)
+
 
     def extract(self, video_path, clips):
 
@@ -24,6 +24,8 @@ class ClipExtractor:
             logger.info("Extracting clips from video")
 
             extracted = []
+
+            video_name = os.path.basename(video_path).split(".")[0]
 
             for i, clip in enumerate(clips):
 
@@ -34,7 +36,7 @@ class ClipExtractor:
 
                 output_path = os.path.join(
                     self.output_dir,
-                    f"clip_{i}.mp4"
+                    f"{video_name}_clip_{i}.mp4"
                 )
 
                 command = [
