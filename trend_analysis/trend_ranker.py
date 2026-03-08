@@ -1,9 +1,14 @@
 """
 Trend Ranker
-Ranks trending keywords based on simple scoring
+Advanced Viral Intelligence Ranking Engine
 """
 
+import random
 from logging.logger import logger
+
+from trend_analysis.data.viral_triggers import VIRAL_TRIGGERS
+from trend_analysis.data.high_interest_topics import HIGH_INTEREST_TOPICS
+from trend_analysis.data.curiosity_words import CURIOSITY_WORDS
 
 
 class TrendRanker:
@@ -15,13 +20,9 @@ class TrendRanker:
 
     def rank(self, keywords):
 
-        """
-        Rank keywords based on position and heuristics
-        """
-
         try:
 
-            logger.info("Ranking trending keywords")
+            logger.info("Running viral intelligence ranking")
 
             ranked = []
 
@@ -29,29 +30,95 @@ class TrendRanker:
 
             for i, keyword in enumerate(keywords):
 
-                # basic score (higher if higher position)
+                keyword_lower = keyword.lower()
+
+                score = 0
+
+
+                # =========================
+                # Position Score
+                # =========================
+
                 position_score = (total - i) / total
 
-                # keyword specificity bonus
-                word_count = len(keyword.split())
-                specificity_bonus = word_count * 0.05
+                score += position_score * 2
 
-                score = position_score + specificity_bonus
+
+                # =========================
+                # Keyword Length Score
+                # =========================
+
+                word_count = len(keyword.split())
+
+                if 2 <= word_count <= 5:
+
+                    score += 1.5
+
+                else:
+
+                    score += 0.5
+
+
+                # =========================
+                # Viral Trigger Words
+                # =========================
+
+                for trigger in VIRAL_TRIGGERS:
+
+                    if trigger in keyword_lower:
+
+                        score += 2
+
+
+                # =========================
+                # High Interest Topic Boost
+                # =========================
+
+                for topic in HIGH_INTEREST_TOPICS:
+
+                    if topic in keyword_lower:
+
+                        score += 2.5
+
+
+                # =========================
+                # Curiosity Words
+                # =========================
+
+                for word in CURIOSITY_WORDS:
+
+                    if word in keyword_lower:
+
+                        score += 1.2
+
+
+                # =========================
+                # Exploration Factor
+                # =========================
+
+                score += random.uniform(0, 0.5)
+
 
                 ranked.append({
+
                     "keyword": keyword,
-                    "score": score
+                    "score": round(score, 4)
+
                 })
 
+
             ranked = sorted(
+
                 ranked,
                 key=lambda x: x["score"],
                 reverse=True
+
             )
 
-            logger.info(f"Ranked {len(ranked)} keywords")
+            logger.info(f"Ranked {len(ranked)} trends")
 
             return ranked
+
 
         except Exception as e:
 
