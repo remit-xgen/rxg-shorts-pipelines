@@ -1,4 +1,4 @@
-11"""
+"""
 Frame Extractor
 Extract frames from video based on timestamps
 Optimized version
