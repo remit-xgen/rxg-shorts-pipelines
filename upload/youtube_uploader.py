@@ -35,10 +35,35 @@ class YouTubeUploader:
 
         try:
 
-            if not os.path.exists(self.token_file):
+            creds = None
 
-                logger.error("YouTube token.json not found")
-                return None
+if os.path.exists(self.token_file):
+
+    creds = Credentials.from_authorized_user_file(
+        self.token_file,
+        SCOPES
+    )
+
+if not creds or not creds.valid:
+
+    if creds and creds.expired and creds.refresh_token:
+
+        logger.info("Refreshing YouTube token")
+        creds.refresh(Request())
+
+    else:
+
+        logger.info("Running YouTube OAuth flow")
+
+        flow = InstalledAppFlow.from_client_secrets_file(
+            CLIENT_SECRET_FILE,
+            SCOPES
+        )
+
+        creds = flow.run_console()
+
+    with open(self.token_file, "w") as token:
+        token.write(creds.to_json())
 
             creds = Credentials.from_authorized_user_file(
                 self.token_file,
