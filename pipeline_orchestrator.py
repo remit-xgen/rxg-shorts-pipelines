@@ -290,4 +290,8 @@ class PipelineOrchestrator:
 
         if __name__ == "__main__":
             orchestrator = PipelineOrchestrator()
-            orchestrator.run()
+
+            try:
+                orchestrator.run()
+            except Exception as e:
+                logger.error(f"Pipeline crashed: {e}")
