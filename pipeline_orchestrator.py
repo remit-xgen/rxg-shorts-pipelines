@@ -31,6 +31,7 @@ from video_processing.audio_extractor import AudioExtractor
 from analysis.transcription import Transcription
 from analysis.scene_detection import SceneDetection
 from analysis.audio_analysis import AudioAnalysis
+from concurrent.futures import ThreadPoolExecutor
 
 # Hook detection
 from hook_detection.hook_generator import HookGenerator
@@ -140,15 +141,37 @@ class PipelineOrchestrator:
         audio = AudioExtractor().extract(video_path)
 
         # =========================
-        # 6. Analysis
+        # 6. Analysis (Parallel)
         # =========================
 
+        logger.info("Starting parallel analysis")
+
         transcriber = Transcription()
-        transcript = transcriber.run(audio)
+        scene_detector = SceneDetection()
+        audio_analyzer = AudioAnalysis()
 
-        scenes = SceneDetection().detect(video_path)
+        with ThreadPoolExecutor(max_workers=3) as executor:
 
-        audio_events = AudioAnalysis().analyze(audio)
+            future_transcript = executor.submit(
+                transcriber.run,
+                audio
+            )
+
+            future_scenes = executor.submit(
+                scene_detector.detect,
+                video_path
+            )
+
+            future_audio = executor.submit(
+                audio_analyzer.analyze,
+                audio
+            )
+
+            transcript = future_transcript.result()
+            scenes = future_scenes.result()
+            audio_events = future_audio.result()
+
+        logger.info("Parallel analysis finished")
 
         # =========================
         # 7. Hook Detection
